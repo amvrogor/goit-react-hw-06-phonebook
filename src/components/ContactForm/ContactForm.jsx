@@ -1,9 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { addContact } from 'redux/contactsSlice';
-import PropTypes from 'prop-types';
 import { Formik, Field } from 'formik';
-import { nanoid } from 'nanoid';
-import * as Yup from 'yup';
+import { validateSchema } from 'components/validateSchema';
+import { addContact } from 'redux/contactsSlice';
+import { getContacts } from 'redux/selectors';
 import {
   Form,
   FormField,
@@ -11,32 +10,22 @@ import {
   SubmitButton,
 } from './ContactForm.styled';
 
-const ContactSchema = Yup.object().shape({
-  name: Yup.string()
-    .matches(
-      /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/,
-      "Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-    )
-    .required('Name is required'),
-  number: Yup.string()
-    .matches(
-      /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/,
-      'Phone number must be digits and can contain spaces, dashes, parentheses and can start with +'
-    )
-    .required('Phone number is required'),
-});
-
 export const ContactForm = () => {
   const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
   return (
     <Formik
       initialValues={{
         name: '',
         number: '',
       }}
-      validationSchema={ContactSchema}
+      validationSchema={validateSchema}
       onSubmit={(values, actions) => {
-        dispatch(addContact(values));
+        contacts.find(
+          contact => contact.name.toLowerCase() === values.name.toLowerCase()
+        )
+          ? alert(`${values.name} is already in contacts`)
+          : dispatch(addContact(values));
         actions.resetForm();
       }}
     >
@@ -55,8 +44,4 @@ export const ContactForm = () => {
       </Form>
     </Formik>
   );
-};
-
-ContactForm.propTypes = {
-  onSave: PropTypes.func.isRequired,
 };
