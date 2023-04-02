@@ -35,16 +35,21 @@ export const Contact = ({ contact: { name, number, id } }) => {
       {isChanged.id === id && isChanged.value === true && (
         <Formik
           initialValues={{
-            name: '',
-            number: '',
-            id: id,
+            name,
+            number,
+            id,
           }}
           validationSchema={validateSchema}
           onSubmit={(values, actions) => {
-            contacts.find(
-              contact =>
-                contact.name.toLowerCase() === values.name.toLowerCase()
-            )
+            contacts
+              .filter(
+                contact =>
+                  contact.name.toLowerCase() !== values.name.toLowerCase()
+              )
+              .find(
+                contact =>
+                  contact.name.toLowerCase() === values.name.toLowerCase()
+              )
               ? alert(`${values.name} is already in contacts`)
               : dispatch(changeContact(values));
             dispatch(setIsChanged(id, false));
@@ -54,18 +59,12 @@ export const Contact = ({ contact: { name, number, id } }) => {
           <Form>
             <FormField>
               Edit name
-              <Field
-                name="name"
-                // value={name}
-              />
+              <Field name="name" />
               <ErrorMessage name="name" component="span" />
             </FormField>
             <FormField>
               Edit number
-              <Field
-                name="number"
-                // value={number}
-              />
+              <Field name="number" />
               <ErrorMessage name="number" component="span" />
             </FormField>
             <Buttons>
