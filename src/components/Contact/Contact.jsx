@@ -41,18 +41,22 @@ export const Contact = ({ contact: { name, number, id } }) => {
           }}
           validationSchema={validateSchema}
           onSubmit={(values, actions) => {
-            contacts
-              .filter(
-                contact =>
-                  contact.name.toLowerCase() !== values.name.toLowerCase()
-              )
-              .find(
-                contact =>
-                  contact.name.toLowerCase() === values.name.toLowerCase()
-              )
-              ? alert(`${values.name} is already in contacts`)
-              : dispatch(changeContact(values));
-            dispatch(setIsChanged(id, false));
+            if (
+              contacts
+                // .filter(
+                //   contact =>
+                //     contact.name.toLowerCase() !== values.name.toLowerCase()
+                // )
+                .find(
+                  contact =>
+                    contact.name.toLowerCase() === values.name.toLowerCase()
+                )
+            )
+              alert(`${values.name} is already in contacts`);
+            else {
+              dispatch(changeContact(values));
+              dispatch(setIsChanged(id, false));
+            }
             actions.resetForm();
           }}
         >
