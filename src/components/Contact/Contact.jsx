@@ -43,10 +43,10 @@ export const Contact = ({ contact: { name, number, id } }) => {
           onSubmit={(values, actions) => {
             if (
               contacts
-                // .filter(
-                //   contact =>
-                //     contact.name.toLowerCase() !== values.name.toLowerCase()
-                // )
+                .filter(
+                  contact =>
+                    contact.id.toLowerCase() !== values.id.toLowerCase()
+                )
                 .find(
                   contact =>
                     contact.name.toLowerCase() === values.name.toLowerCase()
